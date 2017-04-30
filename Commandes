@@ -1,0 +1,9 @@
+set_property :
+  Play : { "command": ["set_property", "pause", false] }
+  Pause : { "command": ["set_property", "pause", true] }
+
+get_property :
+  Récupérer le volume : { "command": ["get_property", "volume"] }
+
+observe_property :
+  Changement de volume : { "command": ["observe_property", 1, "volume"] } //id event = 1
