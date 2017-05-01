@@ -4,14 +4,18 @@
 #include <QTextStream>
 #include <QSignalMapper>
 #include <QLocalServer>
+#include "serveur.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    serveur(new Serveur)
 {
     ui->setupUi(this);
 
     this->statusBar()->setSizeGripEnabled(false);
+
+    progressbar = ui->progressbar;
 
     // Boutons
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
@@ -26,9 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     test3->setGeometry(220,200,61,61);
     test3->setPixmap(QPixmap(":/img/fastback.png"));
 
-    ClickableLabel* test4 = new ClickableLabel("MY LABEL",this);
+    test4 = new ClickableLabel("MY LABEL",this);
     test4->setGeometry(290,200,61,61);
-    test4->setPixmap(QPixmap(":/img/play.png"));
+    test4->setPixmap(QPixmap(":/img/stop.png"));
 
     ClickableLabel* test5 = new ClickableLabel("MY LABEL",this);
     test5->setGeometry(350,200,61,61);
@@ -42,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     test7->setGeometry(510,200,61,61);
     test7->setPixmap(QPixmap(":/img/audio.png"));
 
-    QSlider* test8 = new QSlider(this);
+    test8 = new QSlider(this);
     test8->setOrientation(Qt::Horizontal);
     test8->setGeometry(580,215,131,29);
 
@@ -53,6 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+    // INIT MPV DONNEES
+    QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(on_test8_event_volume(int))) ;
+    QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
+    QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
 
 
 
@@ -77,8 +85,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(signalMapper2, SIGNAL(mapped(QWidget*)), this, SLOT(play_pause(QWidget*)));
 
-
-
+    // SLIDER VOLUME
+    QObject::connect(test8, SIGNAL(sliderMoved(int)), this, SLOT(on_test8_sliderMoved(int))) ;
 
 
 }
@@ -108,17 +116,54 @@ void MainWindow::changer_mode()
 
 void MainWindow::play_pause(QWidget *wid)
 {
-    if (((ClickableLabel*)wid)->objectName() == "stop")
+    if (((ClickableLabel*)wid)->objectName() == "pause")
     {
-        ((ClickableLabel*)wid)->setPixmap(QPixmap(":/img/play.png"));
-        ((ClickableLabel*)wid)->setObjectName("play");
+
+        ((ClickableLabel*)wid)->setPixmap(QPixmap(":/img/pause.png"));
+        ((ClickableLabel*)wid)->setObjectName("pause");
+        serveur->pause();
+
     }
     else
     {
-        ((ClickableLabel*)wid)->setPixmap(QPixmap(":/img/stop.png"));
-        ((ClickableLabel*)wid)->setObjectName("stop");
+        ((ClickableLabel*)wid)->setPixmap(QPixmap(":/img/play.png"));
+        ((ClickableLabel*)wid)->setObjectName("play");
+        serveur->play();
     }
 
 
+}
+
+void MainWindow::on_test4_etatchanged(bool value)
+{
+    if ( value )
+    {
+        test4->setPixmap(QPixmap(":/img/play.png"));
+        test4->setObjectName("play");
+    }
+    else
+    {
+        test4->setPixmap(QPixmap(":/img/pause.png"));
+        test4->setObjectName("pause");
+    }
+}
+
+
+void MainWindow::on_test8_sliderMoved(int position)
+{
+    qDebug() << position;
+    serveur->setVolume(position);
+}
+
+void MainWindow::on_test8_event_volume(int position)
+{
+    qDebug() << position;
+    test8->setValue(position);
+}
+
+void MainWindow::on_progressbar_event_progress(int position)
+{
+    qDebug() << position;
+    progressbar->setValue(position);
 }
 

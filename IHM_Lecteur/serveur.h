@@ -16,9 +16,25 @@ class Serveur: public QObject
 public:
     explicit Serveur(QObject *parent = 0);
     ~Serveur();
+    void play();
+    void pause();
+
+    void observePause();
+
+    void getVolume();
+    void setVolume(int vol);
+    void observeVolume();
+    void observePos();
 
 private slots:
     void readSocket();
+
+
+signals:
+    void volumechanged(int value);
+    void progressionchanged(int value);
+    void timechanged(int value);
+    void etatchanged(bool value);
 
 private:
     QLocalSocket *mpv=NULL;
@@ -27,14 +43,7 @@ private:
 
     void loadFile(QString path);
 
-    void play();
-    void pause();
-    void observePause();
 
-    void getVolume();
-    void setVolume(int vol);
-    void observeVolume();
-    void observePos();
 };
 
 #endif // SERVEUR_H

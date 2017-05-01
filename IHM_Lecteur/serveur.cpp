@@ -34,6 +34,35 @@ void Serveur::readSocket()
         QJsonParseError error;
         QJsonDocument jDoc=QJsonDocument::fromJson(line, &error);
         QJsonObject jsonObject=jDoc.object();
+        if ( jsonObject["id"] == 22 )
+        {
+            qDebug() << "Changement volume" ;
+            qDebug() << jsonObject["data"];
+            emit volumechanged(jsonObject["data"].toInt());
+        }
+
+        if ( jsonObject["id"] == 14 )
+        {
+            qDebug() << "Changement progress" ;
+            qDebug() << round(jsonObject["data"].toDouble());
+            emit progressionchanged(round(jsonObject["data"].toDouble()));
+        }
+
+        if ( jsonObject["id"] == 12 )
+        {
+            qDebug() << "play pause" ;
+            qDebug() << jsonObject["data"].toBool();
+            emit etatchanged(jsonObject["data"].toBool());
+        }
+
+        if ( jsonObject["id"] == 13 )
+        {
+            qDebug() << "Changement time" ;
+            qDebug() << round(jsonObject["data"].toDouble());
+            qDebug() << round((jsonObject["data"].toDouble())/60);
+            qDebug() << fmod(round(jsonObject["data"].toDouble()),60) ;
+            emit timechanged(round(jsonObject["data"].toDouble()));
+        }
         qDebug() << jsonObject;
     }
 }
@@ -140,7 +169,7 @@ void Serveur::getVolume(){
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append(QStringLiteral("get_property"));
-    a.append(QStringLiteral("metadata"));
+    a.append(QStringLiteral("volume"));
 
     QJsonArray b;
     b.append(20);
