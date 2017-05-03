@@ -34,6 +34,7 @@ private slots:
     void on_progressbar_event_progress(int position);
     void on_test4_etatchanged(bool value);
     void on_tempsactuel_event_temps(int temps);
+    void on_metadata_event(QString title, QString artist);
 
 private:
     Ui::MainWindow *ui;

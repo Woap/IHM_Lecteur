@@ -18,9 +18,9 @@ Serveur::Serveur(QObject *parent) :
     observePause();
     observeVolume();
     observePos();
+    observeMetadata();
 
     loadFile("3500.mp3");
-    getVolume();
 }
 
 Serveur::~Serveur() {
@@ -63,6 +63,14 @@ void Serveur::readSocket()
             //qDebug() << fmod(round(jsonObject["data"].toDouble()),60) ;
             emit timechanged(round(jsonObject["data"].toDouble()));
         }
+
+
+        if ( jsonObject["id"] == 30)
+        {
+            QJsonObject d = jsonObject["data"].toObject();
+            emit metadatachanged(d["title"].toString(), d["artist"].toString());
+        }
+
         qDebug() << jsonObject;
     }
 }
@@ -204,6 +212,19 @@ void Serveur::observeVolume(){
     a.append(QStringLiteral("observe_property"));
     a.append(22);
     a.append(QStringLiteral("volume"));
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+}
+
+
+void Serveur::observeMetadata(){
+    QJsonObject jsonObject;
+    QJsonArray a;
+    a.append(QStringLiteral("observe_property"));
+    a.append(30);
+    a.append(QStringLiteral("metadata"));
 
     jsonObject["command"]=a;
 

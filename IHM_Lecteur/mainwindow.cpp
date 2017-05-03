@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
     QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
+    QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
 
 
    // Changement mode étendu / mode normal
@@ -190,4 +191,11 @@ void MainWindow::on_tempsactuel_event_temps(int temps)
      const QString qstr = QString::fromStdString(arguments);
      tempsactuel->setText( qstr );
 
+}
+
+
+void MainWindow::on_metadata_event(QString title, QString artist)
+{
+    ui->titre->setText(title);
+    ui->artiste->setText(artist);
 }
