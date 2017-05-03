@@ -25,7 +25,6 @@ public:
     void setVolume(int vol);
     void setProgress(int p);
     void observeVolume();
-    void observeDuration();
     void observePos();
     void observeMetadata();
     void observeMute();

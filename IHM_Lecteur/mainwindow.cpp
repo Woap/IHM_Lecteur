@@ -210,6 +210,7 @@ void MainWindow::on_test7_event_volume()
         test7->setPixmap(QPixmap(":/img/audio_mute.png"));
         test7->setObjectName("muted");
         serveur->setMute(true);
+        test8->setEnabled(false);
 
     }
     else
@@ -217,6 +218,7 @@ void MainWindow::on_test7_event_volume()
         test7->setPixmap(QPixmap(":/img/audio.png"));
         test7->setObjectName("unmute");
         serveur->setMute(false);
+        test8->setEnabled(true);
     }
 }
 
@@ -226,11 +228,13 @@ void MainWindow::on_test7_event_mute(bool value)
     {
         test7->setPixmap(QPixmap(":/img/audio.png"));
         test7->setObjectName("unmute");
+        test8->setEnabled(true);
     }
     else
     {
         test7->setPixmap(QPixmap(":/img/audio_mute.png"));
         test7->setObjectName("muted");
+        test8->setEnabled(false);
     }
 
 }
