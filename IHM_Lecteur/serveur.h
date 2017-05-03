@@ -30,7 +30,7 @@ public:
     void observeMetadata();
     void observeMute();
     void setMute(bool val);
-
+    void observeDuration();
 private slots:
     void readSocket();
 

@@ -167,14 +167,12 @@ void Serveur::observePause(){
 }
 
 void Serveur::observeDuration(){
-    QJsonObject jsonObject ;
-    QJsonArray a ;
+    QJsonObject jsonObject;
+    QJsonArray a;
+
     a.append(QStringLiteral("observe_property"));
     a.append(25);
     a.append(QStringLiteral("duration"));
-
-
-
 
     jsonObject["command"]=a;
 
