@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     progressbar = ui->progressbar;
     duration = ui->duration;
 
-
+    ui->cover->setScaledContents(true);
 
     // Boutons
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
@@ -103,6 +103,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
     QObject::connect(test7, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
+    QObject::connect(test6, SIGNAL(clicked()), this, SLOT(event_next())) ;
+    QObject::connect(test2, SIGNAL(clicked()), this, SLOT(event_previous())) ;
+
+    QSignalMapper* signalMapper3 = new QSignalMapper (this) ;
+    QObject::connect(test5, SIGNAL(clicked()), signalMapper3, SLOT(map()));
+    QObject::connect(test3, SIGNAL(clicked()), signalMapper3, SLOT(map())) ;
+    signalMapper3->setMapping(test5,2);
+    signalMapper3->setMapping(test3,-2);
+
+    QObject::connect(signalMapper3, SIGNAL(mapped(int)), this, SLOT(event_seek(int)));
 
 }
 
@@ -149,6 +159,21 @@ void MainWindow::play_pause(QWidget *wid)
     }
 
 
+}
+
+void MainWindow::event_next()
+{
+    serveur->next();
+}
+
+void MainWindow::event_previous()
+{
+    serveur->previous();
+}
+
+void MainWindow::event_seek(int value)
+{
+    serveur->seek(value);
 }
 
 void MainWindow::on_test4_etatchanged(bool value)
@@ -268,8 +293,28 @@ void MainWindow::on_tempsactuel_event_temps(int temps)
 }
 
 
+
+
 void MainWindow::on_metadata_event(QString title, QString artist)
 {
     ui->titre->setText(title);
     ui->artiste->setText(artist);
+
+    TagLib::MPEG::File file("../IHM_Lecteur/musique/3500.mp3"); //var d'environnement
+    TagLib::ID3v2::Tag *m_tag = file.ID3v2Tag(true);
+    TagLib::ID3v2::FrameList frameList = m_tag->frameList("APIC");
+
+     if(frameList.isEmpty()) {
+        qDebug() << "Liste vide.";
+     }
+
+     TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+
+     QImage coverQImg;
+     coverQImg.loadFromData((const uchar *) coverImg->picture().data(), coverImg->picture().size());
+     coverQImg.save("../IHM_Lecteur/actuel.jpg");
+
+     QPixmap img("../IHM_Lecteur/actuel.jpg");
+     ui->cover->setPixmap(img);
 }
+

@@ -17,9 +17,7 @@ void ClickableLabel::mousePressEvent(QMouseEvent* event) {
 
 void ClickableLabel::mouseReleaseEvent ( QMouseEvent * event)
 {
-
     emit clicked();
-
 }
 
 void ClickableLabel::slotClicked()

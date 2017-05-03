@@ -22,9 +22,9 @@ Serveur::Serveur(QObject *parent) :
     observeDuration();
 
 
-    loadFile("3500.mp3");
-    loadFile("Akon-holiday.mp3");
 
+    loadList("./musique/playlist1.m3u");
+    //loadFile("3500.mp3");
 
 }
 
@@ -113,6 +113,20 @@ void Serveur::loadFile(QString path){
 
     QJsonArray b;
     b.append(1);
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+}
+
+void Serveur::loadList(QString path){
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("loadlist"));
+    a.append(path);
+
+    QJsonArray b;
+    b.append(2);
 
     jsonObject["command"]=a;
 
@@ -291,6 +305,52 @@ void Serveur::setMute(bool val){
 
     writeSocket(jsonObject);
 
+}
+
+void Serveur::next()
+{
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("playlist-next"));
+
+    QJsonArray b;
+    b.append(3);
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+}
+
+void Serveur::seek(int value)
+{
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("seek"));
+    a.append(value);
+
+    QJsonArray b;
+    b.append(3);
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+}
+
+
+
+void Serveur::previous()
+{
+
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("playlist-prev"));
+
+    QJsonArray b;
+    b.append(3);
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
 }
 
 void Serveur::observeMute(){

@@ -32,7 +32,9 @@ private slots:
     void changer_mode();
     void play_pause(QWidget *wid);
 
-
+    void event_previous();
+    void event_next();
+    void event_seek(int value);
     void on_test8_sliderMoved(int position);
     void on_test8_event_volume(int position);
     void on_test7_event_volume();
@@ -43,6 +45,7 @@ private slots:
     void on_metadata_event(QString title, QString artist);
     void sliderProgressMoved(int position);
     void set_duration(int temps);
+
 
 private:
     Ui::MainWindow *ui;

@@ -25,3 +25,11 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     images.qrc
+
+INCLUDEPATH += \
+    /usr/local/include/taglib
+
+LIBS += \
+    -L/usr/local/lib \
+    -ltag \
+    -lz

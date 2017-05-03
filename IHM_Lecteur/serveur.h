@@ -7,7 +7,15 @@
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <string>
-//#include "taglib/tag.h"
+
+#include "taglib/tag.h"
+#include <fileref.h>
+#include "taglib/tpropertymap.h"
+#include "taglib/mpegfile.h"
+#include "taglib/id3v2tag.h"
+#include "taglib/id3v2frame.h"
+#include "taglib/attachedpictureframe.h"
+
 
 class Serveur: public QObject
 {
@@ -30,6 +38,10 @@ public:
     void observeMute();
     void setMute(bool val);
     void observeDuration();
+    void previous();
+    void next();
+    void seek(int value);
+
 private slots:
     void readSocket();
 
@@ -49,6 +61,7 @@ private:
     void writeSocket(QJsonObject j);
 
     void loadFile(QString path);
+    void loadList(QString path);
 
 
 };
