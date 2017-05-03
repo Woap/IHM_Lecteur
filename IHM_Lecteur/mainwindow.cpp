@@ -105,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(test7, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
     QObject::connect(test6, SIGNAL(clicked()), this, SLOT(event_next())) ;
     QObject::connect(test2, SIGNAL(clicked()), this, SLOT(event_previous())) ;
+    QObject::connect(test, SIGNAL(clicked()), this, SLOT(event_shuffle())) ;
 
     QSignalMapper* signalMapper3 = new QSignalMapper (this) ;
     QObject::connect(test5, SIGNAL(clicked()), signalMapper3, SLOT(map()));
@@ -169,6 +170,11 @@ void MainWindow::event_next()
 void MainWindow::event_previous()
 {
     serveur->previous();
+}
+
+void MainWindow::event_shuffle()
+{
+    serveur->shuffle();
 }
 
 void MainWindow::event_seek(int value)

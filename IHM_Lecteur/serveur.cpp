@@ -336,6 +336,21 @@ void Serveur::seek(int value)
     writeSocket(jsonObject);
 }
 
+void Serveur::shuffle()
+{
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("playlist-shuffle"));
+
+    QJsonArray b;
+    b.append(3);
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+}
+
+
 
 
 void Serveur::previous()

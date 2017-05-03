@@ -35,6 +35,7 @@ private slots:
     void event_previous();
     void event_next();
     void event_seek(int value);
+    void event_shuffle();
     void on_test8_sliderMoved(int position);
     void on_test8_event_volume(int position);
     void on_test7_event_volume();
