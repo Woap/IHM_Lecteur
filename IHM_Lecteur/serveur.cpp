@@ -19,7 +19,7 @@ Serveur::Serveur(QObject *parent) :
     observeVolume();
     observePos();
     observeMetadata();
-    getDuration();
+    observeDuration();
 
     loadFile("3500.mp3");
 }
@@ -158,17 +158,14 @@ void Serveur::observePause(){
     writeSocket(jsonObject);
 }
 
-void Serveur::getDuration(){
-    QJsonObject jsonObject ;
-    QJsonArray a ;
+void Serveur::observeDuration(){
+    QJsonObject jsonObject;
+    QJsonArray a;
     a.append(QStringLiteral("observe_property"));
+    a.append(25);
     a.append(QStringLiteral("duration"));
 
-    QJsonArray b;
-    b.append(25);
-
     jsonObject["command"]=a;
-    jsonObject["request_id"]=b;
 
     writeSocket(jsonObject);
 }

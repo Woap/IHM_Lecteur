@@ -28,6 +28,7 @@ public:
     void getDuration();
     void observePos();
     void observeMetadata();
+    void observeDuration();
 
 private slots:
     void readSocket();
