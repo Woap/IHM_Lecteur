@@ -7,7 +7,7 @@
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <string>
-#include "taglib/tag.h"
+//#include "taglib/tag.h"
 
 class Serveur: public QObject
 {
@@ -23,7 +23,9 @@ public:
 
     void getVolume();
     void setVolume(int vol);
+    void setProgress(int p);
     void observeVolume();
+    void getDuration();
     void observePos();
     void observeMetadata();
 
@@ -37,6 +39,7 @@ signals:
     void timechanged(int value);
     void etatchanged(bool value);
     void metadatachanged (QString title, QString artist);
+    void duration_info(int value);
 
 private:
     QLocalSocket *mpv=NULL;

@@ -18,10 +18,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    int minimal;
+
     QSlider *test8;
     ClickableLabel *test4;
     QSlider *progressbar;
     QLabel *tempsactuel;
+    QLabel *duration;
 
 
 private slots:
@@ -35,6 +38,8 @@ private slots:
     void on_test4_etatchanged(bool value);
     void on_tempsactuel_event_temps(int temps);
     void on_metadata_event(QString title, QString artist);
+    void sliderProgressMoved(int position);
+    void set_duration(int temps);
 
 private:
     Ui::MainWindow *ui;

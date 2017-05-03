@@ -19,6 +19,7 @@ Serveur::Serveur(QObject *parent) :
     observeVolume();
     observePos();
     observeMetadata();
+    getDuration();
 
     loadFile("3500.mp3");
 }
@@ -69,6 +70,12 @@ void Serveur::readSocket()
         {
             QJsonObject d = jsonObject["data"].toObject();
             emit metadatachanged(d["title"].toString(), d["artist"].toString());
+        }
+
+        if ( jsonObject["id"] == 25)
+        {
+            qDebug() << "Duration infoo";
+            emit duration_info(round(jsonObject["data"].toDouble()));
         }
 
         qDebug() << jsonObject;
@@ -151,6 +158,21 @@ void Serveur::observePause(){
     writeSocket(jsonObject);
 }
 
+void Serveur::getDuration(){
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("observe_property"));
+    a.append(QStringLiteral("duration"));
+
+    QJsonArray b;
+    b.append(25);
+
+    jsonObject["command"]=a;
+    jsonObject["request_id"]=b;
+
+    writeSocket(jsonObject);
+}
+
 
 void Serveur::observePos(){
     QJsonObject jsonObject;
@@ -195,6 +217,22 @@ void Serveur::setVolume(int vol) {
     a.append(QStringLiteral("set_property"));
     a.append(QStringLiteral("volume"));
     a.append(vol);
+
+    QJsonArray b;
+    b.append(21);
+
+    jsonObject["command"]=a;
+    jsonObject["request_id"]=b;
+
+    writeSocket(jsonObject);
+}
+
+void Serveur::setProgress(int p) {
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("set_property"));
+    a.append(QStringLiteral("percent-pos"));
+    a.append(p);
 
     QJsonArray b;
     b.append(21);

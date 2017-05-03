@@ -95,7 +95,7 @@
      <string>02:34</string>
     </property>
    </widget>
-   <widget class="QLabel" name="dureetotal">
+   <widget class="QLabel" name="duration">
     <property name="geometry">
      <rect>
       <x>730</x>
@@ -215,7 +215,7 @@
      <x>0</x>
      <y>0</y>
      <width>831</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

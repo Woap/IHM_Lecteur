@@ -15,9 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     this->statusBar()->setSizeGripEnabled(false);
-
+    minimal = 1;
     tempsactuel = ui->tempsactuel;
     progressbar = ui->progressbar;
+    duration = ui->duration;
 
 
     // Boutons
@@ -66,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
     QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
+    QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
 
 
    // Changement mode étendu / mode normal
@@ -92,6 +94,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // SLIDER VOLUME
     QObject::connect(test8, SIGNAL(sliderMoved(int)), this, SLOT(on_test8_sliderMoved(int))) ;
 
+    // SLIDER PROGRESS BAR
+    QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
+    QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
 
 }
 
@@ -104,15 +109,17 @@ void MainWindow::changer_mode()
 {
 
     QRect r = geometry();
-    if (r.height() == 300)
+    if (minimal == 1)
     {
-        this->setGeometry(r.x(),r.y(),831,438);
+         this->setGeometry(r.x(),r.y(),831,438);
          ui->stackedWidget->setCurrentIndex(1);
+         minimal=0;
     }
     else
     {
         this->setGeometry(r.x(),r.y(),831,300);
          ui->stackedWidget->setCurrentIndex(0);
+         minimal=1;
     }
 
 
@@ -153,10 +160,35 @@ void MainWindow::on_test4_etatchanged(bool value)
 }
 
 
+void MainWindow::set_duration(int temps)
+{
+    int min = floor(temps / 60);
+    int sec = temps % 60;
+    qDebug() << min;
+    qDebug() << sec;
+    std::string arguments;
+    if ( min < 10 && sec < 10 )
+       arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
+    else if ( min < 10 && sec >= 10)
+       arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
+    else if ( min >= 10 && sec >= 10)
+       arguments="" + std::to_string(min) + ":" + std::to_string(sec);
+    else if ( min >= 10 && sec < 10)
+       arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
+    const QString qstr = QString::fromStdString(arguments);
+    duration->setText( qstr );
+}
+
 void MainWindow::on_test8_sliderMoved(int position)
 {
     qDebug() << position;
     serveur->setVolume(position);
+}
+
+void MainWindow::sliderProgressMoved(int position)
+{
+    qDebug() << position;
+    serveur->setProgress(position);
 }
 
 void MainWindow::on_test8_event_volume(int position)
