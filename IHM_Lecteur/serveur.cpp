@@ -19,9 +19,13 @@ Serveur::Serveur(QObject *parent) :
     observeVolume();
     observePos();
     observeMetadata();
-    getDuration();
+    observeDuration();
+
 
     loadFile("3500.mp3");
+    loadFile("Akon-holiday.mp3");
+
+
 }
 
 Serveur::~Serveur() {
@@ -59,10 +63,14 @@ void Serveur::readSocket()
         if ( jsonObject["id"] == 13 )
         {
             qDebug() << "Changement time" ;
-            //qDebug() << round(jsonObject["data"].toDouble());
-            //qDebug() << round(floor((jsonObject["data"].toDouble())/60));
-            //qDebug() << fmod(round(jsonObject["data"].toDouble()),60) ;
             emit timechanged(round(jsonObject["data"].toDouble()));
+        }
+
+        if ( jsonObject["id"] == 26 )
+        {
+            qDebug() << "Mute" ;
+
+            emit event_mute(jsonObject["data"].toBool());
         }
 
 
@@ -158,17 +166,17 @@ void Serveur::observePause(){
     writeSocket(jsonObject);
 }
 
-void Serveur::getDuration(){
+void Serveur::observeDuration(){
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append(QStringLiteral("observe_property"));
+    a.append(25);
     a.append(QStringLiteral("duration"));
 
-    QJsonArray b;
-    b.append(25);
+
+
 
     jsonObject["command"]=a;
-    jsonObject["request_id"]=b;
 
     writeSocket(jsonObject);
 }
@@ -235,7 +243,7 @@ void Serveur::setProgress(int p) {
     a.append(p);
 
     QJsonArray b;
-    b.append(21);
+    b.append(27);
 
     jsonObject["command"]=a;
     jsonObject["request_id"]=b;
@@ -268,3 +276,37 @@ void Serveur::observeMetadata(){
 
     writeSocket(jsonObject);
 }
+
+void Serveur::setMute(bool val){
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("set_property"));
+    a.append(QStringLiteral("mute"));
+    a.append(val);
+
+
+    QJsonArray b;
+    b.append(31);
+
+    jsonObject["command"]=a;
+    jsonObject["request_id"]=b;
+
+    writeSocket(jsonObject);
+
+}
+
+void Serveur::observeMute(){
+    QJsonObject jsonObject;
+    QJsonArray a;
+    a.append(QStringLiteral("observe_property"));
+    a.append(26);
+    a.append(QStringLiteral("mute"));
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+
+}
+
+
+

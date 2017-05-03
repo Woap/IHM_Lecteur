@@ -14,5 +14,6 @@
         <file>img/next.png</file>
         <file>img/play.png</file>
         <file>img/pause.png</file>
+        <file>img/audio_mute.png</file>
     </qresource>
 </RCC>

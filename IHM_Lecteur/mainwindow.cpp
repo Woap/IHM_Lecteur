@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     duration = ui->duration;
 
 
+
     // Boutons
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
     test->setGeometry(10,200,61,61);
@@ -46,13 +47,15 @@ MainWindow::MainWindow(QWidget *parent) :
     test6->setGeometry(410,200,61,61);
     test6->setPixmap(QPixmap(":/img/next.png"));
 
-    ClickableLabel* test7 = new ClickableLabel("MY LABEL",this);
+    test7 = new ClickableLabel("MY LABEL",this);
     test7->setGeometry(510,200,61,61);
     test7->setPixmap(QPixmap(":/img/audio.png"));
+    test7->setObjectName("unmute");
 
     test8 = new QSlider(this);
     test8->setOrientation(Qt::Horizontal);
     test8->setGeometry(580,215,131,29);
+
 
 
     ClickableLabel* test9 = new ClickableLabel("MY LABEL",this);
@@ -63,8 +66,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // INIT MPV DONNEES
     QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(on_test8_event_volume(int))) ;
+
     QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
     QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
+    QObject::connect(serveur, SIGNAL(event_mute(bool)), this, SLOT(on_test7_event_mute(bool))) ;
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
     QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
@@ -97,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // SLIDER PROGRESS BAR
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
+    QObject::connect(test7, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
 
 }
 
@@ -195,6 +201,38 @@ void MainWindow::on_test8_event_volume(int position)
 {
     qDebug() << position;
     test8->setValue(position);
+}
+
+void MainWindow::on_test7_event_volume()
+{
+    if ( test7->objectName() == "unmute" )
+    {
+        test7->setPixmap(QPixmap(":/img/audio_mute.png"));
+        test7->setObjectName("muted");
+        serveur->setMute(true);
+
+    }
+    else
+    {
+        test7->setPixmap(QPixmap(":/img/audio.png"));
+        test7->setObjectName("unmute");
+        serveur->setMute(false);
+    }
+}
+
+void MainWindow::on_test7_event_mute(bool value)
+{
+    if ( value )
+    {
+        test7->setPixmap(QPixmap(":/img/audio.png"));
+        test7->setObjectName("unmute");
+    }
+    else
+    {
+        test7->setPixmap(QPixmap(":/img/audio_mute.png"));
+        test7->setObjectName("muted");
+    }
+
 }
 
 void MainWindow::on_progressbar_event_progress(int position)

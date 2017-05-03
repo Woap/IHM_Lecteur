@@ -25,9 +25,11 @@ public:
     void setVolume(int vol);
     void setProgress(int p);
     void observeVolume();
-    void getDuration();
+    void observeDuration();
     void observePos();
     void observeMetadata();
+    void observeMute();
+    void setMute(bool val);
 
 private slots:
     void readSocket();
@@ -35,6 +37,7 @@ private slots:
 
 signals:
     void volumechanged(int value);
+    void event_mute(bool value);
     void progressionchanged(int value);
     void timechanged(int value);
     void etatchanged(bool value);
