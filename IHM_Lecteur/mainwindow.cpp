@@ -13,9 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     this->statusBar()->setSizeGripEnabled(false);
 
+    tempsactuel = ui->tempsactuel;
     progressbar = ui->progressbar;
+
 
     // Boutons
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
@@ -61,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(on_test8_event_volume(int))) ;
     QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
     QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
-
+    QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
 
 
    // Changement mode étendu / mode normal
@@ -167,3 +170,24 @@ void MainWindow::on_progressbar_event_progress(int position)
     progressbar->setValue(position);
 }
 
+
+void MainWindow::on_tempsactuel_event_temps(int temps)
+{
+     //qDebug() << temps;
+     int min = floor(temps / 60);
+     int sec = temps % 60;
+     qDebug() << min;
+     qDebug() << sec;
+     std::string arguments;
+     if ( min < 10 && sec < 10 )
+        arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
+     else if ( min < 10 && sec >= 10)
+        arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
+     else if ( min >= 10 && sec >= 10)
+        arguments="" + std::to_string(min) + ":" + std::to_string(sec);
+     else if ( min >= 10 && sec < 10)
+        arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
+     const QString qstr = QString::fromStdString(arguments);
+     tempsactuel->setText( qstr );
+
+}

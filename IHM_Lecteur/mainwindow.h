@@ -21,6 +21,7 @@ public:
     QSlider *test8;
     ClickableLabel *test4;
     QSlider *progressbar;
+    QLabel *tempsactuel;
 
 
 private slots:
@@ -32,6 +33,7 @@ private slots:
     void on_test8_event_volume(int position);
     void on_progressbar_event_progress(int position);
     void on_test4_etatchanged(bool value);
+    void on_tempsactuel_event_temps(int temps);
 
 private:
     Ui::MainWindow *ui;

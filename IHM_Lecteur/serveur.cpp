@@ -58,9 +58,9 @@ void Serveur::readSocket()
         if ( jsonObject["id"] == 13 )
         {
             qDebug() << "Changement time" ;
-            qDebug() << round(jsonObject["data"].toDouble());
-            qDebug() << round((jsonObject["data"].toDouble())/60);
-            qDebug() << fmod(round(jsonObject["data"].toDouble()),60) ;
+            //qDebug() << round(jsonObject["data"].toDouble());
+            //qDebug() << round(floor((jsonObject["data"].toDouble())/60));
+            //qDebug() << fmod(round(jsonObject["data"].toDouble()),60) ;
             emit timechanged(round(jsonObject["data"].toDouble()));
         }
         qDebug() << jsonObject;

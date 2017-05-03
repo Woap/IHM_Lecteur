@@ -7,7 +7,7 @@
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <string>
-//#include <taglib/taglib.h>
+//#include "taglib/taglib.h"
 
 class Serveur: public QObject
 {
