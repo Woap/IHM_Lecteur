@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ClickableLabel* test3 = new ClickableLabel("MY LABEL",this);
     test3->setGeometry(220,200,61,61);
     test3->setPixmap(QPixmap(":/img/fastback.png"));
+    test3->value = -2;
 
     test4 = new ClickableLabel("MY LABEL",this);
     test4->setGeometry(290,200,61,61);
@@ -42,10 +43,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ClickableLabel* test5 = new ClickableLabel("MY LABEL",this);
     test5->setGeometry(350,200,61,61);
     test5->setPixmap(QPixmap(":/img/fast.png"));
+    test5->value = 3;
 
     ClickableLabel* test6 = new ClickableLabel("MY LABEL",this);
     test6->setGeometry(410,200,61,61);
     test6->setPixmap(QPixmap(":/img/next.png"));
+
 
     test7 = new ClickableLabel("MY LABEL",this);
     test7->setGeometry(510,200,61,61);
@@ -66,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // INIT MPV DONNEES
     QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(on_test8_event_volume(int))) ;
-
     QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
     QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
     QObject::connect(serveur, SIGNAL(event_mute(bool)), this, SLOT(on_test7_event_mute(bool))) ;
@@ -107,19 +109,34 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(test2, SIGNAL(clicked()), this, SLOT(event_previous())) ;
     QObject::connect(test, SIGNAL(clicked()), this, SLOT(event_shuffle())) ;
 
-    QSignalMapper* signalMapper3 = new QSignalMapper (this) ;
+    /*QSignalMapper* signalMapper3 = new QSignalMapper (this) ;
     QObject::connect(test5, SIGNAL(clicked()), signalMapper3, SLOT(map()));
     QObject::connect(test3, SIGNAL(clicked()), signalMapper3, SLOT(map())) ;
     signalMapper3->setMapping(test5,2);
     signalMapper3->setMapping(test3,-2);
 
-    QObject::connect(signalMapper3, SIGNAL(mapped(int)), this, SLOT(event_seek(int)));
+    QObject::connect(signalMapper3, SIGNAL(mapped(int)), this, SLOT(event_seek(int)));*/
+
+
+    QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
+    //QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(set_speed(int))) ;
+
+
+
+
+
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::set_speed(int value)
+{
+    serveur->speed(value);
 }
 
 void MainWindow::changer_mode()
@@ -201,8 +218,7 @@ void MainWindow::set_duration(int temps)
 {
     int min = floor(temps / 60);
     int sec = temps % 60;
-    qDebug() << min;
-    qDebug() << sec;
+
     std::string arguments;
     if ( min < 10 && sec < 10 )
        arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
@@ -218,19 +234,16 @@ void MainWindow::set_duration(int temps)
 
 void MainWindow::on_test8_sliderMoved(int position)
 {
-    qDebug() << position;
     serveur->setVolume(position);
 }
 
 void MainWindow::sliderProgressMoved(int position)
 {
-    qDebug() << position;
     serveur->setProgress(position);
 }
 
 void MainWindow::on_test8_event_volume(int position)
 {
-    qDebug() << position;
     test8->setValue(position);
 }
 
@@ -282,8 +295,7 @@ void MainWindow::on_tempsactuel_event_temps(int temps)
      //qDebug() << temps;
      int min = floor(temps / 60);
      int sec = temps % 60;
-     qDebug() << min;
-     qDebug() << sec;
+
      std::string arguments;
      if ( min < 10 && sec < 10 )
         arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);

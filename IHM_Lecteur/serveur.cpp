@@ -52,8 +52,7 @@ void Serveur::readSocket()
 
         if ( jsonObject["id"] == 14 )
         {
-            qDebug() << "Changement progress" ;
-            qDebug() << round(jsonObject["data"].toDouble());
+
             emit progressionchanged(round(jsonObject["data"].toDouble()));
         }
 
@@ -66,7 +65,7 @@ void Serveur::readSocket()
 
         if ( jsonObject["id"] == 13 )
         {
-            qDebug() << "Changement time" ;
+
             emit timechanged(round(jsonObject["data"].toDouble()));
         }
 

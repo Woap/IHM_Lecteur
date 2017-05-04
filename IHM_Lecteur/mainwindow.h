@@ -47,6 +47,7 @@ private slots:
     void sliderProgressMoved(int position);
     void set_duration(int temps);
     void set_cover(QString filename);
+    void set_speed(int value);
 
 
 private:

@@ -1,5 +1,8 @@
 #include "clickablelabel.h"
 #include <QTextStream>
+#include <QDebug>
+#include <QMouseEvent>
+
 
 ClickableLabel::ClickableLabel(const QString& text, QWidget* parent) : QLabel(parent)
 {
@@ -10,13 +13,20 @@ ClickableLabel::ClickableLabel(const QString& text, QWidget* parent) : QLabel(pa
 ClickableLabel::~ClickableLabel() { }
 
 void ClickableLabel::mousePressEvent(QMouseEvent* event) {
-    //emit clicked();
+
+    //ClickableLabel *widget =(ClickableLabel*) qApp->widgetAt(QCursor::pos());
+    qDebug() << "Value";
+    qDebug() << value;
+    emit clicked(value);
 }
 
 void ClickableLabel::mouseReleaseEvent ( QMouseEvent * event)
 {
+    emit clicked(1);
     emit clicked();
 }
+
+
 
 void ClickableLabel::slotClicked()
 {
