@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     listwidget = ui->listwidget;
 
 
+
     ui->cover->setScaledContents(true);
 
     // Boutons
@@ -143,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+
     start();
 
 
@@ -185,6 +187,7 @@ void MainWindow::switchmode()
         radio_on = true;
 
         std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
+
     }
     else
     {

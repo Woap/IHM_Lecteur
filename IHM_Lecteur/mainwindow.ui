@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>831</width>
-    <height>275</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,9 +62,6 @@
     </property>
     <property name="text">
      <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="images.qrc">:/img/issou.jpg</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="titre">
@@ -217,8 +214,6 @@
    <header>myslider.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

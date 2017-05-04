@@ -42,6 +42,7 @@ public:
 
 
 
+
 private slots:
     void changer_mode();
     void play_pause(QWidget *wid);
