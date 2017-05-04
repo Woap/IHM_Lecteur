@@ -184,6 +184,7 @@ void MainWindow::switchmode()
         shuffle->setDisabled(true);
         fastback->setDisabled(true);
         fast->setDisabled(true);
+        progressbar->setDisabled(true);
         minimal=0;
         changer_mode();
 
@@ -196,8 +197,9 @@ void MainWindow::switchmode()
         fm->setPixmap(QPixmap(":/img/fm_off.png"));
         menu->setDisabled(false);
         shuffle->setDisabled(false);
-        fastback->setDisabled(false);
         fast->setDisabled(false);
+         progressbar->setDisabled(false);
+        fastback->setDisabled(false);
 
         radio_on = false;
         std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
