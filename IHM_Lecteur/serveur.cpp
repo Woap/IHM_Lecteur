@@ -28,7 +28,7 @@ Serveur::Serveur(QObject *parent) :
     loadList("./musique/playlist1.m3u");
     //loadFile("./musique/3500.mp3");
 
-    getPlaylist();
+    //getPlaylist();
 
 }
 
@@ -109,9 +109,6 @@ void Serveur::writeSocket(QJsonObject j)
       mpv->flush();
     }
 }
-
-
-
 
 
 /*********** Commandes à MPV ************/
