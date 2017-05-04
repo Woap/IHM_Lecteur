@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
     QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
+    QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString))) ;
 
 
    // Changement mode étendu / mode normal
@@ -305,8 +306,13 @@ void MainWindow::on_metadata_event(QString title, QString artist)
 {
     ui->titre->setText(title);
     ui->artiste->setText(artist);
+}
 
-    TagLib::MPEG::File file("../IHM_Lecteur/musique/3500.mp3"); //var d'environnement
+
+void MainWindow::set_cover(QString filename)
+{
+    const QString path = "../IHM_Lecteur/musique/"+filename;
+    TagLib::MPEG::File file( path.toStdString().data()); //var d'environnement
     TagLib::ID3v2::Tag *m_tag = file.ID3v2Tag(true);
     TagLib::ID3v2::FrameList frameList = m_tag->frameList("APIC");
 
@@ -323,4 +329,3 @@ void MainWindow::on_metadata_event(QString title, QString artist)
      QPixmap img("../IHM_Lecteur/actuel.jpg");
      ui->cover->setPixmap(img);
 }
-

@@ -46,6 +46,7 @@ private slots:
     void on_metadata_event(QString title, QString artist);
     void sliderProgressMoved(int position);
     void set_duration(int temps);
+    void set_cover(QString filename);
 
 
 private:

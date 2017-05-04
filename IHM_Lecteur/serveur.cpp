@@ -15,6 +15,7 @@ Serveur::Serveur(QObject *parent) :
         mpv->error();
     }
 
+    observeFile();
     observePause();
     observeVolume();
     observePos();
@@ -24,7 +25,7 @@ Serveur::Serveur(QObject *parent) :
 
 
     loadList("./musique/playlist1.m3u");
-    //loadFile("3500.mp3");
+    //loadFile("./musique/3500.mp3");
 
 }
 
@@ -84,6 +85,11 @@ void Serveur::readSocket()
         {
             qDebug() << "Duration infoo";
             emit duration_info(round(jsonObject["data"].toDouble()));
+        }
+
+        if ( jsonObject["id"] == 666)
+        {
+            emit filenamechanged(jsonObject["data"].toString());
         }
 
         qDebug() << jsonObject;
@@ -374,6 +380,20 @@ void Serveur::observeMute(){
     a.append(QStringLiteral("observe_property"));
     a.append(26);
     a.append(QStringLiteral("mute"));
+
+    jsonObject["command"]=a;
+
+    writeSocket(jsonObject);
+
+}
+
+
+void Serveur::observeFile(){
+    QJsonObject jsonObject;
+    QJsonArray a;
+    a.append(QStringLiteral("observe_property"));
+    a.append(666);
+    a.append(QStringLiteral("filename"));
 
     jsonObject["command"]=a;
 
