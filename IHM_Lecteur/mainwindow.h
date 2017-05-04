@@ -24,6 +24,7 @@ public:
     bool radio_on=false;
 
     QSlider *test8;
+    QMutex mutex;
     ClickableLabel *test4;
     ClickableLabel *shuffle;
     ClickableLabel *back;
@@ -49,6 +50,7 @@ private slots:
     void switchmode();
     void event_previous();
     void event_next();
+    void event_radio();
     void event_seek(int value);
     void onListSongItemClicked(QListWidgetItem* item );
     void event_shuffle();

@@ -60,6 +60,7 @@ public:
     void shuffle();
     void speed(int value);
     void demarremusique(int row);
+    void eventmode();
 
 private slots:
     void readSocket();
@@ -75,6 +76,7 @@ signals:
     void metadataradiochanged (QString title, QString artist,QString radio);
     void duration_info(int value);
     void filenamechanged(QString filename);
+    void event_mode();
 
 private:
     QLocalSocket *mpv=NULL;

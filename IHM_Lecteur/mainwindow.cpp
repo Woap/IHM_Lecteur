@@ -89,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(metadataradiochanged(QString, QString,QString)), this, SLOT(on_metadataradio_event(QString, QString,QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
     QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString)));
+    QObject::connect(serveur, SIGNAL(event_mode()), this, SLOT(switchmode()));
 
 
    // Changement mode étendu / mode normal
@@ -131,7 +132,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(test, SIGNAL(clicked()), this, SLOT(event_shuffle())) ;
 
     // FM CLICKED
-    QObject::connect(fm, SIGNAL(clicked()), this, SLOT(switchmode())) ;
+    QObject::connect(fm, SIGNAL(clicked()), this, SLOT(event_radio())) ;
 
      // FORWARD
     QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
@@ -175,6 +176,7 @@ void MainWindow::start()
 
 void MainWindow::switchmode()
 {
+    mutex.lock();
     if ( radio_on == false)
     {
         fm->setPixmap(QPixmap(":/img/fm.png"));
@@ -184,8 +186,8 @@ void MainWindow::switchmode()
         fast->setDisabled(true);
         minimal=0;
         changer_mode();
-        radio_on = true;
 
+        radio_on = true;
         std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
 
     }
@@ -196,15 +198,20 @@ void MainWindow::switchmode()
         shuffle->setDisabled(false);
         fastback->setDisabled(false);
         fast->setDisabled(false);
+
         radio_on = false;
         std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
 
+        ui->listwidget->clear();
         for(std::list<liste>::iterator list_iter = liste_playlist.begin();
             list_iter != liste_playlist.end(); list_iter++)
         {
             ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
         }
+
     }
+    mutex.unlock();
+
 }
 
 void MainWindow::onListSongItemClicked(QListWidgetItem* item )
@@ -219,6 +226,11 @@ void MainWindow::onListSongItemClicked(QListWidgetItem* item )
 void MainWindow::set_speed(int value)
 {
     serveur->speed(value);
+}
+
+void MainWindow::event_radio()
+{
+    serveur->eventmode();
 }
 
 void MainWindow::changer_mode()
@@ -274,6 +286,7 @@ void MainWindow::event_previous()
 void MainWindow::event_shuffle()
 {
     serveur->shuffle();
+    shuffle->setPixmap(QPixmap(":/img/shuffle_on.png"));
 }
 
 void MainWindow::event_seek(int value)
@@ -411,7 +424,7 @@ void MainWindow::on_metadataradio_event(QString title, QString artist,QString ra
 
 void MainWindow::set_cover(QString filename)
 {
-    if (filename != "fm")
+    if (filename != "fm" && filename != "pt-1")
     {
     const QString path = "../IHM_Lecteur/musique/"+filename;
     TagLib::MPEG::File file( path.toStdString().data()); //var d'environnement

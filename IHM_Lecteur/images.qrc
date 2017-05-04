@@ -17,5 +17,6 @@
         <file>img/audio_mute.png</file>
         <file>img/fm_off.png</file>
         <file>img/radio.png</file>
+        <file>img/shuffle_on.png</file>
     </qresource>
 </RCC>

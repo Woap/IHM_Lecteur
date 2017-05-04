@@ -103,12 +103,19 @@ void Serveur::readSocket()
         }
 
 
+        if ( jsonObject["request_id"] == 99)
+        {
+            qDebug() << "EVENTTTT MODEEEE";
+            emit event_mode();
+        }
+
+
         if ( jsonObject["id"] == 666)
          {
                 if ( radio_on == false)
                 {
                     qDebug() << jsonObject["data"].toString();
-                emit filenamechanged(jsonObject["data"].toString());
+                    emit filenamechanged(jsonObject["data"].toString());
                 }
                 else
                 {
@@ -126,6 +133,21 @@ void Serveur::writeSocket(QJsonObject j)
       mpv->write(bytes.data(), bytes.length());
       mpv->flush();
     }
+}
+
+void Serveur::eventmode()
+{
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("set_property"));
+    a.append(QStringLiteral("pause"));
+    a.append(false);
+
+
+    jsonObject["command"]=a;
+    jsonObject["request_id"]=99;
+
+    writeSocket(jsonObject);
 }
 
 
@@ -171,7 +193,7 @@ std::list<liste> Serveur::loadList(QString path){
     }
 
     QTextStream in(&file);
-
+    liste_playlist.clear();
     qDebug() << "TAGLIB";
 
     while(!in.atEnd()) {
