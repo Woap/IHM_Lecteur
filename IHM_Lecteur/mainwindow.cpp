@@ -21,14 +21,14 @@ MainWindow::MainWindow(QWidget *parent) :
     duration = ui->duration;
     listwidget = ui->listwidget;
 
+
     ui->cover->setScaledContents(true);
 
     // Boutons
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
     test->setGeometry(10,200,61,61);
     test->setPixmap(QPixmap(":/img/shuffle.png"));
-
-
+    shuffle = test;
 
     ClickableLabel* test2 = new ClickableLabel("MY LABEL",this);
     test2->setGeometry(160,200,61,61);
@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     test3->setGeometry(220,200,61,61);
     test3->setPixmap(QPixmap(":/img/fastback.png"));
     test3->value = -3;
+    fastback = test3;
 
     test4 = new ClickableLabel("MY LABEL",this);
     test4->setGeometry(290,200,61,61);
@@ -47,39 +48,33 @@ MainWindow::MainWindow(QWidget *parent) :
     test5->setGeometry(350,200,61,61);
     test5->setPixmap(QPixmap(":/img/fast.png"));
     test5->value = 3;
+    fast=test5;
 
     ClickableLabel* test6 = new ClickableLabel("MY LABEL",this);
     test6->setGeometry(410,200,61,61);
     test6->setPixmap(QPixmap(":/img/next.png"));
 
-    /*ClickableLabel* test = new ClickableLabel("MY LABEL",this);
-    test->setGeometry(10,200,61,61);
-    test->setPixmap(QPixmap(":/img/shuffle.png"));*/
+    fm = new ClickableLabel("MY LABEL",this);
+    fm->setGeometry(750,30,31,31);
+    fm->setPixmap(QPixmap(":/img/fm_off.png"));
 
-
-    test7 = new ClickableLabel("MY LABEL",this);
-    test7->setGeometry(510,200,61,61);
-    test7->setPixmap(QPixmap(":/img/audio.png"));
-    test7->setObjectName("unmute");
+    audio = new ClickableLabel("MY LABEL",this);
+    audio->setGeometry(510,200,61,61);
+    audio->setPixmap(QPixmap(":/img/audio.png"));
+    audio->setObjectName("unmute");
 
     test8 = new MySlider(this);
     test8->setOrientation(Qt::Horizontal);
     test8->setGeometry(580,215,131,29);
 
-    std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
-    //std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
 
-
-    /*for(std::list<liste>::iterator list_iter = liste_playlist.begin();
-        list_iter != liste_playlist.end(); list_iter++)
-    {
-        ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
-    }*/
 
 
     ClickableLabel* test9 = new ClickableLabel("MY LABEL",this);
     test9->setGeometry(720,200,61,61);
     test9->setPixmap(QPixmap(":/img/menu.png"));
+
+    menu = test9;
 
 
 
@@ -121,28 +116,34 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // SLIDER PROGRESS BAR
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
-    QObject::connect(test7, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
+
+    // AUDIO BUTTON CLICKED
+    QObject::connect(audio, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
+
+    // NEXT BUTTON CLICKED
     QObject::connect(test6, SIGNAL(clicked()), this, SLOT(event_next())) ;
+
+    // PREVIOUS CLICKED
     QObject::connect(test2, SIGNAL(clicked()), this, SLOT(event_previous())) ;
+
+    // SHUFFLE CLICKED
     QObject::connect(test, SIGNAL(clicked()), this, SLOT(event_shuffle())) ;
 
-    /*QSignalMapper* signalMapper3 = new QSignalMapper (this) ;
-    QObject::connect(test5, SIGNAL(clicked()), signalMapper3, SLOT(map()));
-    QObject::connect(test3, SIGNAL(clicked()), signalMapper3, SLOT(map())) ;
-    signalMapper3->setMapping(test5,2);
-    signalMapper3->setMapping(test3,-2);
+    // FM CLICKED
+    QObject::connect(fm, SIGNAL(clicked()), this, SLOT(switchmode())) ;
 
-    QObject::connect(signalMapper3, SIGNAL(mapped(int)), this, SLOT(event_seek(int)));*/
-
-
+     // FORWARD
     QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
+
+     //
     QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(event_seek(int))) ;
 
-  //  QObject::connect(listwidget, SIGNAL(itemClicked(QListWidgetItem*)),this, SLOT(onListSongItemClicked(QListWidgetItem*))); // A REMETTRE
+     // AFFICHAGE LISTE
+    QObject::connect(listwidget, SIGNAL(itemClicked(QListWidgetItem*)),this, SLOT(onListSongItemClicked(QListWidgetItem*))); // A REMETTRE
 
 
 
-
+    start();
 
 
 }
@@ -152,7 +153,56 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::start()
+{
+    if ( radio_on == true)
+    {
+        std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
+    }
+    else
+    {
+        std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
 
+        for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+            list_iter != liste_playlist.end(); list_iter++)
+        {
+            ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
+        }
+    }
+}
+
+void MainWindow::switchmode()
+{
+    if ( radio_on == false)
+    {
+        fm->setPixmap(QPixmap(":/img/fm.png"));
+        menu->setDisabled(true);
+        shuffle->setDisabled(true);
+        fastback->setDisabled(true);
+        fast->setDisabled(true);
+        minimal=0;
+        changer_mode();
+        radio_on = true;
+
+        std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
+    }
+    else
+    {
+        fm->setPixmap(QPixmap(":/img/fm_off.png"));
+        menu->setDisabled(false);
+        shuffle->setDisabled(false);
+        fastback->setDisabled(false);
+        fast->setDisabled(false);
+        radio_on = false;
+        std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
+
+        for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+            list_iter != liste_playlist.end(); list_iter++)
+        {
+            ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
+        }
+    }
+}
 
 void MainWindow::onListSongItemClicked(QListWidgetItem* item )
 {
@@ -278,18 +328,18 @@ void MainWindow::on_test8_event_volume(int position)
 
 void MainWindow::on_test7_event_volume()
 {
-    if ( test7->objectName() == "unmute" )
+    if ( audio->objectName() == "unmute" )
     {
-        test7->setPixmap(QPixmap(":/img/audio_mute.png"));
-        test7->setObjectName("muted");
+        audio->setPixmap(QPixmap(":/img/audio_mute.png"));
+        audio->setObjectName("muted");
         serveur->setMute(true);
         test8->setEnabled(false);
 
     }
     else
     {
-        test7->setPixmap(QPixmap(":/img/audio.png"));
-        test7->setObjectName("unmute");
+        audio->setPixmap(QPixmap(":/img/audio.png"));
+        audio->setObjectName("unmute");
         serveur->setMute(false);
         test8->setEnabled(true);
     }
@@ -299,14 +349,14 @@ void MainWindow::on_test7_event_mute(bool value)
 {
     if ( value )
     {
-        test7->setPixmap(QPixmap(":/img/audio.png"));
-        test7->setObjectName("unmute");
+        audio->setPixmap(QPixmap(":/img/audio.png"));
+        audio->setObjectName("unmute");
         test8->setEnabled(true);
     }
     else
     {
-        test7->setPixmap(QPixmap(":/img/audio_mute.png"));
-        test7->setObjectName("muted");
+        audio->setPixmap(QPixmap(":/img/audio_mute.png"));
+        audio->setObjectName("muted");
         test8->setEnabled(false);
     }
 
@@ -358,6 +408,8 @@ void MainWindow::on_metadataradio_event(QString title, QString artist,QString ra
 
 void MainWindow::set_cover(QString filename)
 {
+    if (filename != "fm")
+    {
     const QString path = "../IHM_Lecteur/musique/"+filename;
     TagLib::MPEG::File file( path.toStdString().data()); //var d'environnement
     TagLib::ID3v2::Tag *m_tag = file.ID3v2Tag(true);
@@ -375,4 +427,13 @@ void MainWindow::set_cover(QString filename)
 
      QPixmap img("../IHM_Lecteur/actuel.jpg");
      ui->cover->setPixmap(img);
+    }
+    else
+    {
+        QPixmap img(":/img/radio.png");
+        ui->cover->setPixmap(img);
+    }
+
+
+
 }

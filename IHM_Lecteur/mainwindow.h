@@ -25,10 +25,19 @@ public:
 
     QSlider *test8;
     ClickableLabel *test4;
+    ClickableLabel *shuffle;
+    ClickableLabel *back;
+    ClickableLabel *fastback;
+    ClickableLabel *fast;
+    ClickableLabel *next;
+    ClickableLabel *fm;
+    ClickableLabel *audio;
+    ClickableLabel *audio_slider;
+    ClickableLabel *menu;
+
     QSlider *progressbar;
     QLabel *tempsactuel;
     QLabel *duration;
-    ClickableLabel *test7;
     QListWidget *listwidget;
 
 
@@ -36,7 +45,7 @@ public:
 private slots:
     void changer_mode();
     void play_pause(QWidget *wid);
-
+    void switchmode();
     void event_previous();
     void event_next();
     void event_seek(int value);
@@ -55,6 +64,7 @@ private slots:
     void set_duration(int temps);
     void set_cover(QString filename);
     void set_speed(int value);
+    void start();
 
 
 private:

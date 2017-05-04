@@ -103,19 +103,21 @@ void Serveur::readSocket()
         }
 
 
-            if ( jsonObject["id"] == 666)
-            {
+        if ( jsonObject["id"] == 666)
+         {
                 if ( radio_on == false)
                 {
+                    qDebug() << jsonObject["data"].toString();
                 emit filenamechanged(jsonObject["data"].toString());
                 }
+                else
+                {
+                    emit filenamechanged("fm");
+                }
             }
-
-
         qDebug() << jsonObject;
     }
 }
-
 
 void Serveur::writeSocket(QJsonObject j)
 {
@@ -130,6 +132,7 @@ void Serveur::writeSocket(QJsonObject j)
 /*********** Commandes à MPV ************/
 
 void Serveur::loadFile(QString path){
+
     QJsonObject jsonObject ;
     QJsonArray a ;
     a.append(QStringLiteral("loadfile"));
@@ -161,12 +164,11 @@ std::list<liste> Serveur::loadradioList(QString path){
 }
 
 std::list<liste> Serveur::loadList(QString path){
+    radio_on=false;
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly)) {
         qDebug() << path;
     }
-
-
 
     QTextStream in(&file);
 
@@ -249,7 +251,8 @@ void Serveur::demarremusique(int row)
     a.append(QStringLiteral("set_property"));
     a.append(QStringLiteral("playlist-pos"));
     a.append(row);
-
+    qDebug() << "Rowwww";
+    qDebug() << row;
     QJsonArray b;
     b.append(45);
 
@@ -267,7 +270,7 @@ void Serveur::speed(int value){
     a.append(value);
 
     QJsonArray b;
-    b.append(45);
+    b.append(46);
 
     jsonObject["command"]=a;
     jsonObject["request_id"]=b;

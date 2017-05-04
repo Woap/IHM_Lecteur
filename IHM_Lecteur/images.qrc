@@ -15,5 +15,7 @@
         <file>img/play.png</file>
         <file>img/pause.png</file>
         <file>img/audio_mute.png</file>
+        <file>img/fm_off.png</file>
+        <file>img/radio.png</file>
     </qresource>
 </RCC>
