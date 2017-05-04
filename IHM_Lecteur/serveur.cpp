@@ -25,8 +25,12 @@ Serveur::Serveur(QObject *parent) :
 
 
 
+
     //loadList("./musique/playlist1.m3u");
-    loadFile("./musique");
+    //loadFile("./musique");
+
+    //loadFile("./musique/3500.mp3");
+
 
     //getPlaylist();
 
@@ -126,18 +130,70 @@ void Serveur::loadFile(QString path){
     writeSocket(jsonObject);
 }
 
-void Serveur::loadList(QString path){
-    QJsonObject jsonObject ;
-    QJsonArray a ;
-    a.append(QStringLiteral("loadlist"));
-    a.append(path);
+std::list<liste> Serveur::loadList(QString path){
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly)) {
+        qDebug() << path;
+    }
 
-    QJsonArray b;
-    b.append(2);
 
-    jsonObject["command"]=a;
 
-    writeSocket(jsonObject);
+    QTextStream in(&file);
+
+    qDebug() << "TAGLIB";
+    std::list<liste> liste_playlist;
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        QString line2 = QDir::currentPath() + "/../IHM_Lecteur/musique/" + line;
+        TagLib::FileRef f(line2.toStdString().data());
+
+        liste l;
+        l.filename = line2;
+        l.title = QString::fromStdString(f.tag()->title().to8Bit());
+        l.artist = QString::fromStdString(f.tag()->artist().to8Bit());
+        l.album = QString::fromStdString(f.tag()->album().to8Bit());
+        int temps = f.audioProperties()->length();
+
+        int min = floor(temps / 60);
+        int sec = temps % 60;
+
+        std::string arguments;
+        if ( min < 10 && sec < 10 )
+             arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
+        else if ( min < 10 && sec >= 10)
+             arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
+        else if ( min >= 10 && sec >= 10)
+             arguments="" + std::to_string(min) + ":" + std::to_string(sec);
+        else if ( min >= 10 && sec < 10)
+             arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
+        const QString qstr = QString::fromStdString(arguments);
+
+        l.duration = qstr;
+        liste_playlist.push_front(l);
+    }
+
+            for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+                list_iter != liste_playlist.end(); list_iter++)
+            {
+                qDebug() << list_iter->title << endl;
+            }
+
+        file.close();
+
+        QJsonObject jsonObject ;
+        QJsonArray a ;
+        a.append(QStringLiteral("loadlist"));
+        a.append(path);
+
+        QJsonArray b;
+        b.append(2);
+
+        jsonObject["command"]=a;
+
+        writeSocket(jsonObject);
+
+        return liste_playlist;
 }
 
 

@@ -17,6 +17,14 @@
 #include "taglib/id3v2frame.h"
 #include "taglib/attachedpictureframe.h"
 
+typedef struct l_liste {
+    QString filename;
+    QString title;
+    QString artist;
+    QString album;
+    QString duration;
+} liste;
+
 
 class Serveur: public QObject
 {
@@ -25,6 +33,9 @@ class Serveur: public QObject
 public:
     explicit Serveur(QObject *parent = 0);
     ~Serveur();
+
+    std::list<liste> loadList(QString path);
+
     void play();
     void pause();
 
@@ -66,7 +77,6 @@ private:
     void writeSocket(QJsonObject j);
 
     void loadFile(QString path);
-    void loadList(QString path);
 
 
 };
