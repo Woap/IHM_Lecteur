@@ -158,6 +158,22 @@ void Serveur::play(){
     writeSocket(jsonObject);
 }
 
+void Serveur::speed(int value){
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("set_property"));
+    a.append(QStringLiteral("speed"));
+    a.append(value);
+
+    QJsonArray b;
+    b.append(45);
+
+    jsonObject["command"]=a;
+    jsonObject["request_id"]=b;
+
+    writeSocket(jsonObject);
+}
+
 
 void Serveur::pause(){
     QJsonObject jsonObject ;

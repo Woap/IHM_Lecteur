@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     clickablelabel.cpp \
-    serveur.cpp
+    serveur.cpp \
+    myslider.cpp
 
 HEADERS  += mainwindow.h \
     clickablelabel.h \
-    serveur.h
+    serveur.h \
+    myslider.h
 
 FORMS    += mainwindow.ui
 

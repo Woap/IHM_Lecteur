@@ -44,6 +44,7 @@ public:
     void next();
     void seek(int value);
     void shuffle();
+    void speed(int value);
 
 private slots:
     void readSocket();

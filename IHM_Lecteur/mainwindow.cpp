@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     test7->setPixmap(QPixmap(":/img/audio.png"));
     test7->setObjectName("unmute");
 
-    test8 = new QSlider(this);
+    test8 = new MySlider(this);
     test8->setOrientation(Qt::Horizontal);
     test8->setGeometry(580,215,131,29);
 
@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
     QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
-    QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString))) ;
+    QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString)));
 
 
    // Changement mode étendu / mode normal
@@ -101,7 +101,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(test8, SIGNAL(sliderMoved(int)), this, SLOT(on_test8_sliderMoved(int))) ;
 
     // SLIDER PROGRESS BAR
-    QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
     QObject::connect(test7, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
     QObject::connect(test6, SIGNAL(clicked()), this, SLOT(event_next())) ;

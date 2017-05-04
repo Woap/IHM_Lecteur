@@ -20,7 +20,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QSlider" name="progressbar">
+   <widget class="MySlider" name="progressbar">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -246,6 +246,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MySlider</class>
+   <extends>QSlider</extends>
+   <header>myslider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="images.qrc"/>
  </resources>
