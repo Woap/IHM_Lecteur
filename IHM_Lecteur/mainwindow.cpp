@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     test6->setPixmap(QPixmap(":/img/next.png"));
 
     fm = new ClickableLabel("MY LABEL",this);
-    fm->setGeometry(750,30,31,31);
+    fm->setGeometry(750,30,61,61);
     fm->setPixmap(QPixmap(":/img/fm_off.png"));
 
     audio = new ClickableLabel("MY LABEL",this);
