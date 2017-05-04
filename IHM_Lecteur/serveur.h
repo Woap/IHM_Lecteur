@@ -35,6 +35,9 @@ public:
     ~Serveur();
 
     std::list<liste> loadList(QString path);
+    std::list<liste> loadradioList(QString path);
+    std::list<liste> liste_playlist;
+    bool radio_on=false;
 
     void play();
     void pause();
@@ -56,6 +59,7 @@ public:
     void seek(int value);
     void shuffle();
     void speed(int value);
+    void demarremusique(int row);
 
 private slots:
     void readSocket();
@@ -68,6 +72,7 @@ signals:
     void timechanged(int value);
     void etatchanged(bool value);
     void metadatachanged (QString title, QString artist);
+    void metadataradiochanged (QString title, QString artist,QString radio);
     void duration_info(int value);
     void filenamechanged(QString filename);
 

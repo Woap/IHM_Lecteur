@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tempsactuel = ui->tempsactuel;
     progressbar = ui->progressbar;
     duration = ui->duration;
+    listwidget = ui->listwidget;
 
     ui->cover->setScaledContents(true);
 
@@ -26,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ClickableLabel* test = new ClickableLabel("MY LABEL",this);
     test->setGeometry(10,200,61,61);
     test->setPixmap(QPixmap(":/img/shuffle.png"));
+
+
 
     ClickableLabel* test2 = new ClickableLabel("MY LABEL",this);
     test2->setGeometry(160,200,61,61);
@@ -49,6 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     test6->setGeometry(410,200,61,61);
     test6->setPixmap(QPixmap(":/img/next.png"));
 
+    /*ClickableLabel* test = new ClickableLabel("MY LABEL",this);
+    test->setGeometry(10,200,61,61);
+    test->setPixmap(QPixmap(":/img/shuffle.png"));*/
+
 
     test7 = new ClickableLabel("MY LABEL",this);
     test7->setGeometry(510,200,61,61);
@@ -59,13 +66,15 @@ MainWindow::MainWindow(QWidget *parent) :
     test8->setOrientation(Qt::Horizontal);
     test8->setGeometry(580,215,131,29);
 
+    std::list<liste> liste_playlist = serveur->loadradioList(QDir::currentPath() + "/../IHM_Lecteur/musique/radioplaylist.m3u");
+    //std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
 
-    std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
-    for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+
+    /*for(std::list<liste>::iterator list_iter = liste_playlist.begin();
         list_iter != liste_playlist.end(); list_iter++)
     {
         ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
-    }
+    }*/
 
 
     ClickableLabel* test9 = new ClickableLabel("MY LABEL",this);
@@ -81,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serveur, SIGNAL(event_mute(bool)), this, SLOT(on_test7_event_mute(bool))) ;
     QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
     QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
+    QObject::connect(serveur, SIGNAL(metadataradiochanged(QString, QString,QString)), this, SLOT(on_metadataradio_event(QString, QString,QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
     QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString)));
 
@@ -128,6 +138,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
     QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(event_seek(int))) ;
 
+  //  QObject::connect(listwidget, SIGNAL(itemClicked(QListWidgetItem*)),this, SLOT(onListSongItemClicked(QListWidgetItem*))); // A REMETTRE
+
 
 
 
@@ -138,6 +150,16 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+
+void MainWindow::onListSongItemClicked(QListWidgetItem* item )
+{
+   int row = item->listWidget()->row( item );
+   qDebug() << row;
+   serveur->demarremusique(row);
+
 }
 
 
@@ -324,6 +346,13 @@ void MainWindow::on_metadata_event(QString title, QString artist)
 {
     ui->titre->setText(title);
     ui->artiste->setText(artist);
+}
+
+void MainWindow::on_metadataradio_event(QString title, QString artist,QString radio)
+{
+    ui->titre->setText(title);
+    ui->artiste->setText(artist);
+    ui->radio->setText(radio);
 }
 
 

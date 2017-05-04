@@ -6,6 +6,7 @@
 #include "serveur.h"
 #include <QSlider>
 #include <QMessageBox>
+#include <QListWidget>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     int minimal;
+    bool radio_on=false;
 
     QSlider *test8;
     ClickableLabel *test4;
@@ -27,6 +29,8 @@ public:
     QLabel *tempsactuel;
     QLabel *duration;
     ClickableLabel *test7;
+    QListWidget *listwidget;
+
 
 
 private slots:
@@ -36,6 +40,7 @@ private slots:
     void event_previous();
     void event_next();
     void event_seek(int value);
+    void onListSongItemClicked(QListWidgetItem* item );
     void event_shuffle();
     void on_test8_sliderMoved(int position);
     void on_test8_event_volume(int position);
@@ -45,6 +50,7 @@ private slots:
     void on_test4_etatchanged(bool value);
     void on_tempsactuel_event_temps(int temps);
     void on_metadata_event(QString title, QString artist);
+    void on_metadataradio_event(QString title, QString artist,QString radio);
     void sliderProgressMoved(int position);
     void set_duration(int temps);
     void set_cover(QString filename);
