@@ -60,6 +60,13 @@ MainWindow::MainWindow(QWidget *parent) :
     test8->setGeometry(580,215,131,29);
 
 
+    std::list<liste> liste_playlist = serveur->loadList(QDir::currentPath() + "/../IHM_Lecteur/musique/playlist1.m3u");
+    for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+        list_iter != liste_playlist.end(); list_iter++)
+    {
+        ui->listwidget->addItem(list_iter->artist + " - " + list_iter->title + " - " + list_iter->duration);
+    }
+
 
     ClickableLabel* test9 = new ClickableLabel("MY LABEL",this);
     test9->setGeometry(720,200,61,61);

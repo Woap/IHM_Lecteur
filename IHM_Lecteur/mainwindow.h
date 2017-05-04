@@ -5,6 +5,7 @@
 #include <clickablelabel.h>
 #include "serveur.h"
 #include <QSlider>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;

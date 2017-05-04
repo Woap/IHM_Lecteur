@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>831</width>
-    <height>301</height>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -148,7 +148,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page"/>
     <widget class="QWidget" name="page_2">
@@ -165,69 +165,17 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="label_2">
+     <widget class="QListWidget" name="listwidget">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>10</x>
         <y>40</y>
-        <width>651</width>
-        <height>17</height>
+        <width>761</width>
+        <height>131</height>
        </rect>
       </property>
-      <property name="text">
-       <string>1. Artiste - Titre                                                                                                                                                  04:25</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>60</y>
-        <width>651</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1. Artiste - Titre                                                                                                                                                  04:25</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>80</y>
-        <width>691</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1. Artiste - Titre                                                                                                                                                  04:25</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>100</y>
-        <width>651</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1. Artiste - Titre                                                                                                                                                  04:25</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>120</y>
-        <width>651</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1. Artiste - Titre                                                                                                                                                  04:25</string>
+      <property name="styleSheet">
+       <string notr="true">@ setStyleSheet(&quot;background:transparent;&quot;);</string>
       </property>
      </widget>
     </widget>
@@ -239,7 +187,7 @@
      <x>0</x>
      <y>0</y>
      <width>831</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
