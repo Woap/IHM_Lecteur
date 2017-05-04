@@ -1,6 +1,7 @@
 #include "serveur.h"
 #include <QDebug>
 
+
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
     mpv(new QLocalSocket(this))
@@ -25,6 +26,8 @@ Serveur::Serveur(QObject *parent) :
 
     loadList("./musique/playlist1.m3u");
     //loadFile("3500.mp3");
+
+    getPlaylist();
 
 }
 
@@ -86,9 +89,11 @@ void Serveur::readSocket()
             emit duration_info(round(jsonObject["data"].toDouble()));
         }
 
+
         qDebug() << jsonObject;
     }
 }
+
 
 void Serveur::writeSocket(QJsonObject j)
 {

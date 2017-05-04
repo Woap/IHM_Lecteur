@@ -3,6 +3,7 @@
 #define SERVEUR_H
 
 #include <QObject>
+#include <QJsonArray>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
