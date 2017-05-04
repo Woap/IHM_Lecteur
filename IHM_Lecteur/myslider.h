@@ -1,3 +1,11 @@
+/**
+ * \file myslider.h
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ *
+ */
+
 #ifndef MYSLIDER_H
 #define MYSLIDER_H
 

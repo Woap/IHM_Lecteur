@@ -1,3 +1,11 @@
+/**
+ * \file main.cpp
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ *
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 

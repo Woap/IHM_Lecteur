@@ -12,6 +12,15 @@
 #include "taglib/tag.h"
 #include <fileref.h>
 #include "taglib/tpropertymap.h"
+/**
+ * \file serveur.h
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ *
+ */
+
+
 #include "taglib/mpegfile.h"
 #include "taglib/id3v2tag.h"
 #include "taglib/id3v2frame.h"

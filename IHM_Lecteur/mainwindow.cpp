@@ -1,3 +1,11 @@
+/**
+ * \file mainwindow.cpp
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ * Gestion de l'UI, reception des events, envoie des commandes
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "clickablelabel.h"
@@ -80,33 +88,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // INIT MPV DONNEES
-    QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(on_test8_event_volume(int))) ;
-    QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(on_progressbar_event_progress(int))) ;
-    QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(on_test4_etatchanged(bool))) ;
-    QObject::connect(serveur, SIGNAL(event_mute(bool)), this, SLOT(on_test7_event_mute(bool))) ;
-    QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(on_tempsactuel_event_temps(int))) ;
-    QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(on_metadata_event(QString, QString))) ;
-    QObject::connect(serveur, SIGNAL(metadataradiochanged(QString, QString,QString)), this, SLOT(on_metadataradio_event(QString, QString,QString))) ;
+    QObject::connect(serveur, SIGNAL(volumechanged(int)), this, SLOT(test8_event_volume(int))) ;
+    QObject::connect(serveur, SIGNAL(progressionchanged(int)), this, SLOT(progressbar_event_progress(int))) ;
+    QObject::connect(serveur, SIGNAL(etatchanged(bool)), this, SLOT(test4_etatchanged(bool))) ;
+    QObject::connect(serveur, SIGNAL(event_mute(bool)), this, SLOT(test7_event_mute(bool))) ;
+    QObject::connect(serveur, SIGNAL(timechanged(int)), this, SLOT(tempsactuel_event_temps(int))) ;
+    QObject::connect(serveur, SIGNAL(metadatachanged(QString, QString)), this, SLOT(metadata_event(QString, QString))) ;
+    QObject::connect(serveur, SIGNAL(metadataradiochanged(QString, QString,QString)), this, SLOT(metadataradio_event(QString, QString,QString))) ;
     QObject::connect(serveur, SIGNAL(duration_info(int)), this, SLOT(set_duration(int))) ;
     QObject::connect(serveur, SIGNAL(filenamechanged(QString)), this, SLOT(set_cover(QString)));
     QObject::connect(serveur, SIGNAL(event_mode()), this, SLOT(switchmode()));
 
 
-   // Changement mode étendu / mode normal
-   QSignalMapper* signalMapper = new QSignalMapper (this) ;
-   QObject::connect(test9, SIGNAL(clicked()), signalMapper, SLOT(map())) ;
+    // Changement mode étendu / mode normal
+    QSignalMapper* signalMapper = new QSignalMapper (this) ;
+    QObject::connect(test9, SIGNAL(clicked()), signalMapper, SLOT(map())) ;
 
-   signalMapper->setMapping(test9,1) ;
+    signalMapper->setMapping(test9,1) ;
+    QObject::connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changer_mode()));
 
-
-   QObject::connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changer_mode()));
-
-   // Changement bouton play/pause
+    // Changement bouton play/pause
 
 
-   QSignalMapper* signalMapper2 = new QSignalMapper (this) ;
-   QObject::connect(test4, SIGNAL(clicked()), signalMapper2, SLOT(map()));
-   // QObject::connect(test13, SIGNAL(clicked()), signalMapper2, SLOT(map()));
+    QSignalMapper* signalMapper2 = new QSignalMapper (this) ;
+    QObject::connect(test4, SIGNAL(clicked()), signalMapper2, SLOT(map()));
+    // QObject::connect(test13, SIGNAL(clicked()), signalMapper2, SLOT(map()));
 
     signalMapper2->setMapping(test4,test4);
     //signalMapper2->setMapping(test13,test13);
@@ -114,13 +120,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(signalMapper2, SIGNAL(mapped(QWidget*)), this, SLOT(play_pause(QWidget*)));
 
     // SLIDER VOLUME
-    QObject::connect(test8, SIGNAL(sliderMoved(int)), this, SLOT(on_test8_sliderMoved(int))) ;
+    QObject::connect(test8, SIGNAL(sliderMoved(int)), this, SLOT(test8_sliderMoved(int))) ;
 
     // SLIDER PROGRESS BAR
     QObject::connect(ui->progressbar, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int))) ;
 
     // AUDIO BUTTON CLICKED
-    QObject::connect(audio, SIGNAL(clicked()), this, SLOT(on_test7_event_volume())) ;
+    QObject::connect(audio, SIGNAL(clicked()), this, SLOT(test7_event_volume())) ;
 
     // NEXT BUTTON CLICKED
     QObject::connect(test6, SIGNAL(clicked()), this, SLOT(event_next())) ;
@@ -134,17 +140,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // FM CLICKED
     QObject::connect(fm, SIGNAL(clicked()), this, SLOT(event_radio())) ;
 
-     // FORWARD
+    // FORWARD
     QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
 
-     //
+    // SEEK
     QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(event_seek(int))) ;
 
-     // AFFICHAGE LISTE
+    // AFFICHAGE LISTE
     QObject::connect(listwidget, SIGNAL(itemClicked(QListWidgetItem*)),this, SLOT(onListSongItemClicked(QListWidgetItem*))); // A REMETTRE
-
-
-
 
     start();
 
@@ -198,7 +201,7 @@ void MainWindow::switchmode()
         menu->setDisabled(false);
         shuffle->setDisabled(false);
         fast->setDisabled(false);
-         progressbar->setDisabled(false);
+        progressbar->setDisabled(false);
         fastback->setDisabled(false);
 
         radio_on = false;
@@ -218,9 +221,8 @@ void MainWindow::switchmode()
 
 void MainWindow::onListSongItemClicked(QListWidgetItem* item )
 {
-   int row = item->listWidget()->row( item );
-   qDebug() << row;
-   serveur->demarremusique(row);
+    int row = item->listWidget()->row( item );
+    serveur->demarremusique(row);
 
 }
 
@@ -241,15 +243,15 @@ void MainWindow::changer_mode()
     QRect r = geometry();
     if (minimal == 1)
     {
-         this->setGeometry(r.x(),r.y(),831,438);
-         ui->stackedWidget->setCurrentIndex(1);
-         minimal=0;
+        this->setGeometry(r.x(),r.y(),831,438);
+        ui->stackedWidget->setCurrentIndex(1);
+        minimal=0;
     }
     else
     {
         this->setGeometry(r.x(),r.y(),831,300);
-         ui->stackedWidget->setCurrentIndex(0);
-         minimal=1;
+        ui->stackedWidget->setCurrentIndex(0);
+        minimal=1;
     }
 
 
@@ -293,10 +295,10 @@ void MainWindow::event_shuffle()
 
 void MainWindow::event_seek(int value)
 {
-        serveur->seek(value);
+    serveur->seek(value);
 }
 
-void MainWindow::on_test4_etatchanged(bool value)
+void MainWindow::test4_etatchanged(bool value)
 {
     if ( value )
     {
@@ -318,18 +320,18 @@ void MainWindow::set_duration(int temps)
 
     std::string arguments;
     if ( min < 10 && sec < 10 )
-       arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
+        arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
     else if ( min < 10 && sec >= 10)
-       arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
+        arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
     else if ( min >= 10 && sec >= 10)
-       arguments="" + std::to_string(min) + ":" + std::to_string(sec);
+        arguments="" + std::to_string(min) + ":" + std::to_string(sec);
     else if ( min >= 10 && sec < 10)
-       arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
+        arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
     const QString qstr = QString::fromStdString(arguments);
     duration->setText( qstr );
 }
 
-void MainWindow::on_test8_sliderMoved(int position)
+void MainWindow::test8_sliderMoved(int position)
 {
     serveur->setVolume(position);
 }
@@ -339,12 +341,12 @@ void MainWindow::sliderProgressMoved(int position)
     serveur->setProgress(position);
 }
 
-void MainWindow::on_test8_event_volume(int position)
+void MainWindow::test8_event_volume(int position)
 {
     test8->setValue(position);
 }
 
-void MainWindow::on_test7_event_volume()
+void MainWindow::test7_event_volume()
 {
     if ( audio->objectName() == "unmute" )
     {
@@ -363,7 +365,7 @@ void MainWindow::on_test7_event_volume()
     }
 }
 
-void MainWindow::on_test7_event_mute(bool value)
+void MainWindow::test7_event_mute(bool value)
 {
     if ( value )
     {
@@ -380,43 +382,43 @@ void MainWindow::on_test7_event_mute(bool value)
 
 }
 
-void MainWindow::on_progressbar_event_progress(int position)
+void MainWindow::progressbar_event_progress(int position)
 {
-    qDebug() << position;
+
     progressbar->setValue(position);
 }
 
 
-void MainWindow::on_tempsactuel_event_temps(int temps)
+void MainWindow::tempsactuel_event_temps(int temps)
 {
-     //qDebug() << temps;
-     int min = floor(temps / 60);
-     int sec = temps % 60;
 
-     std::string arguments;
-     if ( min < 10 && sec < 10 )
+    int min = floor(temps / 60);
+    int sec = temps % 60;
+
+    std::string arguments;
+    if ( min < 10 && sec < 10 )
         arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
-     else if ( min < 10 && sec >= 10)
+    else if ( min < 10 && sec >= 10)
         arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
-     else if ( min >= 10 && sec >= 10)
+    else if ( min >= 10 && sec >= 10)
         arguments="" + std::to_string(min) + ":" + std::to_string(sec);
-     else if ( min >= 10 && sec < 10)
+    else if ( min >= 10 && sec < 10)
         arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
-     const QString qstr = QString::fromStdString(arguments);
-     tempsactuel->setText( qstr );
+    const QString qstr = QString::fromStdString(arguments);
+    tempsactuel->setText( qstr );
 
 }
 
 
 
 
-void MainWindow::on_metadata_event(QString title, QString artist)
+void MainWindow::metadata_event(QString title, QString artist)
 {
     ui->titre->setText(title);
     ui->artiste->setText(artist);
 }
 
-void MainWindow::on_metadataradio_event(QString title, QString artist,QString radio)
+void MainWindow::metadataradio_event(QString title, QString artist,QString radio)
 {
     ui->titre->setText(title);
     ui->artiste->setText(artist);
@@ -428,23 +430,23 @@ void MainWindow::set_cover(QString filename)
 {
     if (filename != "fm" && filename != "pt-1")
     {
-    const QString path = "../IHM_Lecteur/musique/"+filename;
-    TagLib::MPEG::File file( path.toStdString().data()); //var d'environnement
-    TagLib::ID3v2::Tag *m_tag = file.ID3v2Tag(true);
-    TagLib::ID3v2::FrameList frameList = m_tag->frameList("APIC");
+        const QString path = "../IHM_Lecteur/musique/"+filename;
+        TagLib::MPEG::File file( path.toStdString().data()); //var d'environnement
+        TagLib::ID3v2::Tag *m_tag = file.ID3v2Tag(true);
+        TagLib::ID3v2::FrameList frameList = m_tag->frameList("APIC");
 
-     if(frameList.isEmpty()) {
-        qDebug() << "Liste vide.";
-     }
+        if(frameList.isEmpty()) {
+            qDebug() << "Liste vide.";
+        }
 
-     TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+        TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
 
-     QImage coverQImg;
-     coverQImg.loadFromData((const uchar *) coverImg->picture().data(), coverImg->picture().size());
-     coverQImg.save("../IHM_Lecteur/actuel.jpg");
+        QImage coverQImg;
+        coverQImg.loadFromData((const uchar *) coverImg->picture().data(), coverImg->picture().size());
+        coverQImg.save("../IHM_Lecteur/actuel.jpg");
 
-     QPixmap img("../IHM_Lecteur/actuel.jpg");
-     ui->cover->setPixmap(img);
+        QPixmap img("../IHM_Lecteur/actuel.jpg");
+        ui->cover->setPixmap(img);
     }
     else
     {

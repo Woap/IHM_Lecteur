@@ -1,3 +1,11 @@
+/**
+ * \file serveur.cpp
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ * Fichier permettant de communiquer avec le serveur MPV et recevoir les données
+ */
+
 #include "serveur.h"
 #include <QDebug>
 
@@ -23,23 +31,13 @@ Serveur::Serveur(QObject *parent) :
     observeMetadata();
     observeDuration();
 
-
-
-
-    //loadList("./musique/playlist1.m3u");
-    //loadFile("./musique");
-
-    //loadFile("./musique/3500.mp3");
-
-
-    //getPlaylist();
-
 }
 
 Serveur::~Serveur() {
     mpv->disconnectFromServer();
 }
 
+// Lire la socket
 void Serveur::readSocket()
 {
     while (mpv->canReadLine()) {
@@ -49,8 +47,8 @@ void Serveur::readSocket()
         QJsonObject jsonObject=jDoc.object();
         if ( jsonObject["id"] == 22 )
         {
-            qDebug() << "Changement volume" ;
-            qDebug() << jsonObject["data"];
+
+
             emit volumechanged(jsonObject["data"].toInt());
         }
 
@@ -62,8 +60,7 @@ void Serveur::readSocket()
 
         if ( jsonObject["id"] == 12 )
         {
-            qDebug() << "play pause" ;
-            qDebug() << jsonObject["data"].toBool();
+
             emit etatchanged(jsonObject["data"].toBool());
         }
 
@@ -75,7 +72,7 @@ void Serveur::readSocket()
 
         if ( jsonObject["id"] == 26 )
         {
-            qDebug() << "Mute" ;
+
 
             emit event_mute(jsonObject["data"].toBool());
         }
@@ -85,8 +82,8 @@ void Serveur::readSocket()
         {
             if ( radio_on == false)
             {
-            QJsonObject d = jsonObject["data"].toObject();
-            emit metadatachanged(d["title"].toString(), d["artist"].toString());
+                QJsonObject d = jsonObject["data"].toObject();
+                emit metadatachanged(d["title"].toString(), d["artist"].toString());
             }
             else
             {
@@ -98,42 +95,45 @@ void Serveur::readSocket()
 
         if ( jsonObject["id"] == 25)
         {
-            qDebug() << "Duration infoo";
+
             emit duration_info(round(jsonObject["data"].toDouble()));
         }
 
 
         if ( jsonObject["request_id"] == 99)
         {
-            qDebug() << "EVENTTTT MODEEEE";
+
             emit event_mode();
         }
 
 
         if ( jsonObject["id"] == 666)
-         {
-                if ( radio_on == false)
-                {
-                    qDebug() << jsonObject["data"].toString();
-                    emit filenamechanged(jsonObject["data"].toString());
-                }
-                else
-                {
-                    emit filenamechanged("fm");
-                }
+        {
+            if ( radio_on == false)
+            {
+
+                emit filenamechanged(jsonObject["data"].toString());
             }
-        qDebug() << jsonObject;
+            else
+            {
+                emit filenamechanged("fm");
+            }
+        }
+
     }
 }
 
+// Ecrire sur la socket
 void Serveur::writeSocket(QJsonObject j)
 {
     QByteArray bytes = QJsonDocument(j).toJson(QJsonDocument::Compact)+"\n";
     if (mpv!=NULL) {
-      mpv->write(bytes.data(), bytes.length());
-      mpv->flush();
+        mpv->write(bytes.data(), bytes.length());
+        mpv->flush();
     }
 }
+
+/*********** Commandes à MPV ************/
 
 void Serveur::eventmode()
 {
@@ -151,7 +151,6 @@ void Serveur::eventmode()
 }
 
 
-/*********** Commandes à MPV ************/
 
 void Serveur::loadFile(QString path){
 
@@ -169,20 +168,20 @@ void Serveur::loadFile(QString path){
 }
 
 std::list<liste> Serveur::loadradioList(QString path){
-        radio_on=true;
-        QJsonObject jsonObject ;
-        QJsonArray a ;
-        a.append(QStringLiteral("loadlist"));
-        a.append(path);
+    radio_on=true;
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("loadlist"));
+    a.append(path);
 
-        QJsonArray b;
-        b.append(27);
+    QJsonArray b;
+    b.append(27);
 
-        jsonObject["command"]=a;
+    jsonObject["command"]=a;
 
-        writeSocket(jsonObject);
+    writeSocket(jsonObject);
 
-        return liste_playlist;
+    return liste_playlist;
 }
 
 std::list<liste> Serveur::loadList(QString path){
@@ -194,7 +193,7 @@ std::list<liste> Serveur::loadList(QString path){
 
     QTextStream in(&file);
     liste_playlist.clear();
-    qDebug() << "TAGLIB";
+
 
     while(!in.atEnd()) {
         QString line = in.readLine();
@@ -213,40 +212,40 @@ std::list<liste> Serveur::loadList(QString path){
 
         std::string arguments;
         if ( min < 10 && sec < 10 )
-             arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
+            arguments="0"+ std::to_string(min) + ":0" + std::to_string(sec);
         else if ( min < 10 && sec >= 10)
-             arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
+            arguments="0" + std::to_string(min) + ":" + std::to_string(sec);
         else if ( min >= 10 && sec >= 10)
-             arguments="" + std::to_string(min) + ":" + std::to_string(sec);
+            arguments="" + std::to_string(min) + ":" + std::to_string(sec);
         else if ( min >= 10 && sec < 10)
-             arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
+            arguments="" + std::to_string(min) + ":0" + std::to_string(sec);
         const QString qstr = QString::fromStdString(arguments);
 
         l.duration = qstr;
         liste_playlist.push_back(l);
     }
 
-            for(std::list<liste>::iterator list_iter = liste_playlist.begin();
-                list_iter != liste_playlist.end(); list_iter++)
-            {
-                qDebug() << list_iter->title << endl;
-            }
+    for(std::list<liste>::iterator list_iter = liste_playlist.begin();
+        list_iter != liste_playlist.end(); list_iter++)
+    {
+        //qDebug() << list_iter->title << endl;
+    }
 
-        file.close();
+    file.close();
 
-        QJsonObject jsonObject ;
-        QJsonArray a ;
-        a.append(QStringLiteral("loadlist"));
-        a.append(path);
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append(QStringLiteral("loadlist"));
+    a.append(path);
 
-        QJsonArray b;
-        b.append(2);
+    QJsonArray b;
+    b.append(2);
 
-        jsonObject["command"]=a;
+    jsonObject["command"]=a;
 
-        writeSocket(jsonObject);
+    writeSocket(jsonObject);
 
-        return liste_playlist;
+    return liste_playlist;
 }
 
 
@@ -273,8 +272,8 @@ void Serveur::demarremusique(int row)
     a.append(QStringLiteral("set_property"));
     a.append(QStringLiteral("playlist-pos"));
     a.append(row);
-    qDebug() << "Rowwww";
-    qDebug() << row;
+
+
     QJsonArray b;
     b.append(45);
 
@@ -499,8 +498,6 @@ void Serveur::shuffle()
 
     writeSocket(jsonObject);
 }
-
-
 
 
 void Serveur::previous()

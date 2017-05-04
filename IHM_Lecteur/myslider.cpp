@@ -1,3 +1,11 @@
+/**
+ * \file myslider.cpp
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ * Slider personnalisé
+ */
+
 #include "myslider.h"
 
 #include <QStyleOptionSlider>
@@ -17,19 +25,19 @@ MySlider::MySlider(Qt::Orientation orientation, QWidget * parent)
 }
 
 void MySlider::mousePressEvent ( QMouseEvent * event )
-  {
+{
     QStyleOptionSlider opt;
-      initStyleOption(&opt);
-      QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+    initStyleOption(&opt);
+    QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
 
 
-      if (event->button() == Qt::LeftButton && sr.contains(event->pos()) == false)
-      {
+    if (event->button() == Qt::LeftButton && sr.contains(event->pos()) == false)
+    {
         int newVal;
         if (orientation() == Qt::Vertical)
-           newVal = minimum() + ((maximum()-minimum()) * (height()-event->y())) / height();
+            newVal = minimum() + ((maximum()-minimum()) * (height()-event->y())) / height();
         else
-           newVal = minimum() + ((maximum()-minimum()) * event->x()) / width();
+            newVal = minimum() + ((maximum()-minimum()) * event->x()) / width();
 
         if (invertedAppearance() == true)
             setValue( maximum() - newVal );
@@ -38,10 +46,10 @@ void MySlider::mousePressEvent ( QMouseEvent * event )
 
         event->accept();
         emit sliderMoved(newVal);
-      }
+    }
 
-      QSlider::mousePressEvent(event);
+    QSlider::mousePressEvent(event);
 
-  }
+}
 
 

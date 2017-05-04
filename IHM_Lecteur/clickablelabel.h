@@ -1,3 +1,12 @@
+/**
+ * \file clickablelabel.h
+ * \author CHIBOUT Yanis et IBIS Ibrahim
+ *
+ * Aud.io lecteur audio pour mpv
+ *
+ */
+
+
 #ifndef CLICKABLELABEL_H
 #define CLICKABLELABEL_H
 
@@ -5,25 +14,28 @@
 #include <QWidget>
 #include <QLabel>
 
-class ClickableLabel : public QLabel { Q_OBJECT
+class ClickableLabel : public QLabel
+{
+    Q_OBJECT
+
 public:
 
     explicit ClickableLabel( const QString& text="", QWidget* parent=0 );
-   ~ClickableLabel();
+    ~ClickableLabel();
     int value=0;
 
 signals:
 
-   void clicked();
-   void clicked(int value);
+    void clicked();
+    void clicked(int value);
 protected:
 
-   void mousePressEvent(QMouseEvent* event);
-   void mouseReleaseEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
 
 
 public slots:
-   void slotClicked();
+    void slotClicked();
 };
 
 #endif // CLICKABLELABEL_H
