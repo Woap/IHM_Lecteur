@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ClickableLabel* test3 = new ClickableLabel("MY LABEL",this);
     test3->setGeometry(220,200,61,61);
     test3->setPixmap(QPixmap(":/img/fastback.png"));
-    test3->value = -2;
+    test3->value = -3;
 
     test4 = new ClickableLabel("MY LABEL",this);
     test4->setGeometry(290,200,61,61);
@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QObject::connect(test5, SIGNAL(clicked(int)), this, SLOT(set_speed(int)));
-    //QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(set_speed(int))) ;
+    QObject::connect(test3, SIGNAL(clicked(int)), this, SLOT(event_seek(int))) ;
 
 
 
@@ -203,7 +203,7 @@ void MainWindow::event_shuffle()
 
 void MainWindow::event_seek(int value)
 {
-    serveur->seek(value);
+        serveur->seek(value);
 }
 
 void MainWindow::on_test4_etatchanged(bool value)

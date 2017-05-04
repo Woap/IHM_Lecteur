@@ -13,7 +13,6 @@ ClickableLabel::ClickableLabel(const QString& text, QWidget* parent) : QLabel(pa
 ClickableLabel::~ClickableLabel() { }
 
 void ClickableLabel::mousePressEvent(QMouseEvent* event) {
-
     //ClickableLabel *widget =(ClickableLabel*) qApp->widgetAt(QCursor::pos());
     qDebug() << "Value";
     qDebug() << value;
