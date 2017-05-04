@@ -37,6 +37,7 @@ public:
     void observePos();
     void observeMetadata();
     void observeMute();
+    void observeFile();
     void setMute(bool val);
     void observeDuration();
     void previous();
@@ -56,6 +57,7 @@ signals:
     void etatchanged(bool value);
     void metadatachanged (QString title, QString artist);
     void duration_info(int value);
+    void filenamechanged(QString filename);
 
 private:
     QLocalSocket *mpv=NULL;
